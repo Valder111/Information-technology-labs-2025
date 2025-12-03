@@ -192,7 +192,9 @@ docker run -d --name debian-t4 -v "$(pwd)":/data debian:stable-slim tail -f /dev
 **Теория:**
 - `-v "$(pwd)":/data` — создаёт **bind mount**: директория хоста напрямую монтируется в контейнер. Любые изменения синхронизируются в реальном времени.
 - `tail -f /dev/null` — бесконечная команда, удерживающая контейнер в активном состоянии (иначе CentOS/Debian завершились бы сразу).
+  
 ![Работа](assets/4/Ого2.png)
+
 Из контейнера CentOS я создал файл:
 ```bash
 docker exec -it centos-t4 bash -c 'echo "Hello from CentOS!" > /data/centos.txt'
@@ -210,6 +212,7 @@ docker exec -it debian-t4 cat /data/centos.txt
 docker exec -it debian-t4 cat /data/host.txt
 ```
 ![Контейнеры](assets/4/Ого.png)
+
 Оба файла были видны — это показало, что bind mount даёт **реальное совместное использование файлов** между хостом и контейнерами.
 
 ---
@@ -262,12 +265,14 @@ docker tag custom-nginx:1.0.0 127.0.0.1:5000/custom-nginx:latest
 docker push 127.0.0.1:5000/custom-nginx:latest
 ```
 ![Порт](assets/5/Бимбом.png)
+
 **Важно:** По умолчанию Docker считает реестры на `localhost:5000` **небезопасными**, поэтому пуш разрешён без TLS.
 
 Через веб-интерфейс Portainer (`https://127.0.0.1:9000`) я:
 - создал учётную запись администратора,
 - выбрал Local-окружение,
 - в разделе **Stacks → Web Editor** задеплоил стек:
+  
 ![Порт](assets/5/Бимбом2.png)
 
 ```yaml
@@ -279,10 +284,13 @@ services:
       - "9090:80"
 ```
 ![Порт](assets/5/Бимбом3.png)
+
 Страница стала доступна по `http://127.0.0.1:9090`.
 
 Я открыл Inspect для этого контейнера в Portainer, перешёл во вкладку **Tree → Config** и сделал скриншот от `AppArmorProfile` до `Driver`.
+
 ![Порт](assets/5/Бимбом4.png)
+
 Потом я удалил `compose.yaml` и снова выполнил `docker compose up -d`. Появилось предупреждение:
 
 > **WARNING**: The “compose.yaml” file is missing. Project state may be inconsistent.
